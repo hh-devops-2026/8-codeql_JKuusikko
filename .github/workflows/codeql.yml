@@ -42,5 +42,13 @@ jobs:
 
       - name: Test endpoint
         run: |
-          sleep 3
-          curl --fail "http://localhost:8080/readfile?file=safe-files/hello.txt"
+          for i in $(seq 1 10); do
+            if curl --fail "http://localhost:8080/readfile?file=safe-files/hello.txt"; then
+              echo "Success"
+              exit 0
+            fi
+            echo "Waiting for server..."
+            sleep 3
+          done
+          echo "Server did not respond"
+          exit 1
